@@ -16,7 +16,8 @@ public class DemoApplication {
 	private static final Logger log;
 
 	static {
-		System.setProperty("java.util.logging.SimpleFormatter.format", "[%4$-7s] %5$s %n");
+		System.setProperty("java.util.logging.SimpleFormatter.format",
+				"%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS: %4$s: %5$s%n%6$s%n");
 		log = Logger.getLogger(DemoApplication.class.getName());
 	}
 
@@ -24,6 +25,7 @@ public class DemoApplication {
 
 		log.info("Loading application properties");
 		Properties properties = new Properties();
+
 		try {
 			properties.load(DemoApplication.class.getClassLoader().getResourceAsStream("application.properties"));
 
@@ -33,16 +35,21 @@ public class DemoApplication {
 			log.info("Database connection test: " + connection.getCatalog());
 
 			log.info("Loading database schema");
+
 			Scanner scanner = new Scanner(DemoApplication.class.getClassLoader().getResourceAsStream("schema.sql"));
 			Statement statement = connection.createStatement();
+
 			while (scanner.hasNext()) {
 				statement.execute(scanner.nextLine());
 
 			}
+
 			log.info("Create database schema");
 			log.info("Closing database connection");
+
 			connection.close();
 			AbandonedConnectionCleanupThread.uncheckedShutdown();
+
 		} catch (IOException e) {
 
 			e.printStackTrace();
