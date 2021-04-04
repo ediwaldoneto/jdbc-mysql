@@ -7,34 +7,27 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 import java.util.Scanner;
-import java.util.logging.Logger;
-
 import com.mysql.cj.jdbc.AbandonedConnectionCleanupThread;
+import br.com.nt.client.DemoClient;
+import br.com.nt.model.ModelApplication;
+import br.com.nt.utils.Util;
 
 public class DemoApplication {
 
-	private static final Logger log;
-
-	static {
-		System.setProperty("java.util.logging.SimpleFormatter.format",
-				"%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS: %4$s: %5$s%n%6$s%n");
-		log = Logger.getLogger(DemoApplication.class.getName());
-	}
-
 	public static void main(String[] args) {
 
-		log.info("Loading application properties");
+		Util.infoLog("Loading application properties");
 		Properties properties = new Properties();
 
 		try {
 			properties.load(DemoApplication.class.getClassLoader().getResourceAsStream("application.properties"));
 
-			log.info("Connecting to the database");
+			Util.infoLog("Connecting to the database");
 
 			Connection connection = DriverManager.getConnection(properties.getProperty("url"), properties);
-			log.info("Database connection test: " + connection.getCatalog());
+			Util.infoLog("Database connection test: " + connection.getCatalog());
 
-			log.info("Loading database schema");
+			Util.infoLog("Loading database schema");
 
 			Scanner scanner = new Scanner(DemoApplication.class.getClassLoader().getResourceAsStream("schema.sql"));
 			Statement statement = connection.createStatement();
@@ -44,11 +37,19 @@ public class DemoApplication {
 
 			}
 
-			log.info("Create database schema");
-			log.info("Closing database connection");
+			Util.infoLog("Create database schema");
+
+			ModelApplication md = new ModelApplication(1L, "configuration",
+					"congratulations, you have set up JDBC correctly!", true);
+
+			DemoClient.insertData(md, connection);
+
+			DemoClient.readData(connection);
 
 			connection.close();
 			AbandonedConnectionCleanupThread.uncheckedShutdown();
+
+			Util.infoLog("Closing database connection");
 
 		} catch (IOException e) {
 
