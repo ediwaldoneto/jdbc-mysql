@@ -19,7 +19,7 @@ public class DemoClient {
 		preparedStatement.setString(2, application.getDescription());
 		preparedStatement.setString(3, application.getDetails());
 		preparedStatement.setBoolean(4, application.isDone());
-
+		Util.infoLog("Data -> " + application.toString());
 		preparedStatement.execute();
 	}
 
@@ -52,8 +52,17 @@ public class DemoClient {
 		preparedStatement.setString(2, application.getDescription());
 		preparedStatement.setString(3, application.getDetails());
 		preparedStatement.setBoolean(4, application.isDone());
-
+		Util.infoLog("Data update from the database: " + application.toString());
 		preparedStatement.execute();
 
+	}
+
+	public static void deleteData(ModelApplication application, Connection connection) throws SQLException {
+
+		Util.infoLog("Delete Data");
+		PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM app WHERE id = ?; ");
+		preparedStatement.setLong(1, application.getId());
+		preparedStatement.executeUpdate();
+		readData(connection);
 	}
 }
