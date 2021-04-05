@@ -44,7 +44,14 @@ public class DemoApplication {
 
 			DemoClient.insertData(md, connection);
 
+			
 			DemoClient.readData(connection);
+						
+			md.setDetails("congratulations, you have updated data!");
+			
+			DemoClient.updateData(md, connection);
+			
+			DemoClient.deleteData(md, connection);
 
 			connection.close();
 			AbandonedConnectionCleanupThread.uncheckedShutdown();
