@@ -29,6 +29,7 @@ public class DemoClient {
 		PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM app");
 		ResultSet resultSet = preparedStatement.executeQuery();
 		if (!resultSet.next()) {
+			Util.infoLog("There is no data in the database!");
 			return null;
 		}
 
@@ -42,4 +43,17 @@ public class DemoClient {
 
 	}
 
+	public static void updateData(ModelApplication application, Connection connection) throws SQLException {
+
+		Util.infoLog("Update Data");
+		PreparedStatement preparedStatement = connection
+				.prepareStatement("UPDATE todo SET description = ?, details = ?, done = ? WHERE id = ?;");
+		preparedStatement.setLong(1, application.getId());
+		preparedStatement.setString(2, application.getDescription());
+		preparedStatement.setString(3, application.getDetails());
+		preparedStatement.setBoolean(4, application.isDone());
+
+		preparedStatement.execute();
+
+	}
 }
